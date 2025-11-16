@@ -1,3 +1,7 @@
 from fastapi import FastAPI
 
-apiobj = FastAPI()
+app = FastAPI()
+
+@app.get("/")
+def read_root():
+    return {"message": "Hello, MTG!"}
