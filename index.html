@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MTG Card Search</title>
+</head>
+<body>
+    <h1>MTG Card Search</h1>
+
+    <input type="text" id="cardName" placeholder="Enter card name">
+    <button onclick="searchCard()">Search</button>
+
+    <div id="result" style="margin-top:20px;"></div>
+
+    <script>
+        async function searchCard() {
+            const name = document.getElementById("cardName").value;
+            const resultDiv = document.getElementById("result");
+
+            // Clear previous results
+            resultDiv.innerHTML = "";
+
+            if (!name) {
+                resultDiv.innerHTML = "Please enter a card name.";
+                return;
+            }
+
+            try {
+                // Call your FastAPI backend
+                const response = await fetch(`http://127.0.0.1:8000/card/${encodeURIComponent(name)}`);
+                if (!response.ok) {
+                    resultDiv.innerHTML = "Card not found!";
+                    return;
+                }
+                const data = await response.json();
+
+                // Display the card info
+                resultDiv.innerHTML = `
+                    <h2>${data.name}</h2>
+                    <p>Mana Cost: ${data.mana_cost}</p>
+                    <p>Type: ${data.type_line}</p>
+                    <img src="${data.image_url}" alt="${data.name}" width="300">
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = "Error fetching card.";
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>
